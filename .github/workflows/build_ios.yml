@@ -30,11 +30,16 @@ jobs:
             sed -i '' 's/platform :ios, ".*"/platform :ios, "13.0"/' ios/Podfile
           fi
 
+      - name: Inject Dummy Development Team
+        run: |
+          sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER =/DEVELOPMENT_TEAM = 1234567890;\n\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER =/g' ios/Runner.xcodeproj/project.pbxproj
+
       - name: Get Dependencies
         run: flutter pub get
 
       - name: Build iOS (Unsigned)
-        run: flutter build ios --release --no-codesign
+        run: |
+          flutter build ios --release --no-codesign CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
 
       - name: Package App into .IPA
         run: |
