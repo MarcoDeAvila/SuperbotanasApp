@@ -13,17 +13,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Flutter
+      - name: Set up Flutter (Versión fija compatible con FlutterFlow)
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          flutter-version: '3.22.2'
           cache: true
-
-      - name: Fix outdated dependencies for newer Flutter SDK
-        run: |
-          flutter pub add intl:^0.20.3
-          flutter pub add font_awesome_flutter:^10.8.0
-          flutter pub add page_transition:^2.1.2
 
       - name: Update Minimum iOS Deployment Target
         run: |
@@ -38,7 +32,7 @@ jobs:
           # Inyectar ID de equipo ficticio para la validación de Flutter CLI
           sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER =/DEVELOPMENT_TEAM = "1234567890";\n\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER =/g' ios/Runner.xcodeproj/project.pbxproj
           
-          # Desactivar firma de código directamente en el archivo xcconfig de iOS
+          # Desactivar firma de código directamente en la configuración de iOS
           echo "CODE_SIGNING_ALLOWED=NO" >> ios/Flutter/Release.xcconfig
           echo "CODE_SIGNING_REQUIRED=NO" >> ios/Flutter/Release.xcconfig
           echo "CODE_SIGN_IDENTITY=" >> ios/Flutter/Release.xcconfig
