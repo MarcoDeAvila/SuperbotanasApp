@@ -45,10 +45,12 @@ jobs:
           with open('pubspec.yaml', 'r') as f:
               content = f.read()
 
+          overrides = '\n  collection: 1.18.0\n  url_launcher_web: 2.3.3'
+
           if 'dependency_overrides:' in content:
-              content = content.replace('dependency_overrides:', 'dependency_overrides:\n  collection: 1.18.0')
+              content = content.replace('dependency_overrides:', 'dependency_overrides:' + overrides)
           else:
-              content += '\ndependency_overrides:\n  collection: 1.18.0\n'
+              content += '\ndependency_overrides:' + overrides + '\n'
 
           with open('pubspec.yaml', 'w') as f:
               f.write(content)
