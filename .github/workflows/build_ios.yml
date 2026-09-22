@@ -30,16 +30,22 @@ jobs:
             sed -i '' 's/platform :ios, ".*"/platform :ios, "13.0"/' ios/Podfile
           fi
 
-      - name: Inject Dummy Development Team
+      - name: Configure Xcode Signing Settings
         run: |
-          sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER =/DEVELOPMENT_TEAM = 1234567890;\n\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER =/g' ios/Runner.xcodeproj/project.pbxproj
+          # Inyectar ID de equipo ficticio para la validación de Flutter CLI
+          sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER =/DEVELOPMENT_TEAM = "1234567890";\n\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER =/g' ios/Runner.xcodeproj/project.pbxproj
+          
+          # Desactivar firma de código directamente en el archivo xcconfig de iOS
+          echo "CODE_SIGNING_ALLOWED=NO" >> ios/Flutter/Release.xcconfig
+          echo "CODE_SIGNING_REQUIRED=NO" >> ios/Flutter/Release.xcconfig
+          echo "CODE_SIGN_IDENTITY=" >> ios/Flutter/Release.xcconfig
+          echo "EXPANDED_CODE_SIGN_IDENTITY=" >> ios/Flutter/Release.xcconfig
 
       - name: Get Dependencies
         run: flutter pub get
 
       - name: Build iOS (Unsigned)
-        run: |
-          flutter build ios --release --no-codesign CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
+        run: flutter build ios --release --no-codesign
 
       - name: Package App into .IPA
         run: |
