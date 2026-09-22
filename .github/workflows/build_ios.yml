@@ -16,7 +16,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          channel: 'stable'
           cache: true
 
       - name: Update Minimum iOS Deployment Target
@@ -29,33 +29,15 @@ jobs:
 
       - name: Configure Xcode Signing Settings
         run: |
-          # Inyectar ID de equipo ficticio para la validación de Flutter CLI
           sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER =/DEVELOPMENT_TEAM = "1234567890";\n\t\t\t\tPRODUCT_BUNDLE_IDENTIFIER =/g' ios/Runner.xcodeproj/project.pbxproj
-          
-          # Desactivar firma de código directamente en la configuración de iOS
           echo "CODE_SIGNING_ALLOWED=NO" >> ios/Flutter/Release.xcconfig
           echo "CODE_SIGNING_REQUIRED=NO" >> ios/Flutter/Release.xcconfig
           echo "CODE_SIGN_IDENTITY=" >> ios/Flutter/Release.xcconfig
           echo "EXPANDED_CODE_SIGN_IDENTITY=" >> ios/Flutter/Release.xcconfig
 
-      - name: Safe Dependency Override and Get
-        run: |
-          rm -f pubspec.lock
-          python3 -c "
-          with open('pubspec.yaml', 'r') as f:
-              content = f.read()
-
-          if 'dependency_overrides:' in content:
-              parts = content.split('dependency_overrides:')
-              if 'collection:' not in parts[1]:
-                  content = content.replace('dependency_overrides:', 'dependency_overrides:\n  collection: 1.18.0')
-          else:
-              content += '\ndependency_overrides:\n  collection: 1.18.0\n'
-
-          with open('pubspec.yaml', 'w') as f:
-              f.write(content)
-          "
-          flutter pub get
+      # Usamos 'flutter pub get' tal cual viene el repositorio, respetando pubspec.lock
+      - name: Get Dependencies
+        run: flutter pub get
 
       - name: Build iOS (Unsigned)
         run: flutter build ios --release --no-codesign
