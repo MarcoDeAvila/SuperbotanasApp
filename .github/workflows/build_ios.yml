@@ -45,7 +45,7 @@ jobs:
           with open('pubspec.yaml', 'r') as f:
               content = f.read()
 
-          overrides = '\n  collection: 1.18.0\n  url_launcher_web: 2.3.3'
+          overrides = '\n  collection: 1.18.0\n  url_launcher_web: 2.3.1\n  url_launcher_android: 6.3.0\n  url_launcher_ios: 6.3.0'
 
           if 'dependency_overrides:' in content:
               content = content.replace('dependency_overrides:', 'dependency_overrides:' + overrides)
