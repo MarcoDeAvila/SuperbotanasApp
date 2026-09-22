@@ -38,8 +38,13 @@ jobs:
           echo "CODE_SIGN_IDENTITY=" >> ios/Flutter/Release.xcconfig
           echo "EXPANDED_CODE_SIGN_IDENTITY=" >> ios/Flutter/Release.xcconfig
 
-      - name: Get Dependencies
-        run: flutter pub get
+      - name: Resolve and Get Dependencies
+        run: |
+          rm -f pubspec.lock
+          echo "" >> pubspec.yaml
+          echo "dependency_overrides:" >> pubspec.yaml
+          echo "  collection: 1.18.0" >> pubspec.yaml
+          flutter pub get
 
       - name: Build iOS (Unsigned)
         run: flutter build ios --release --no-codesign
