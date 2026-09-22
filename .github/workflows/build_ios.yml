@@ -22,6 +22,14 @@ jobs:
       - name: Fix intl dependency conflict
         run: flutter pub add intl:^0.20.3
 
+      - name: Update Minimum iOS Deployment Target
+        run: |
+          if [ -f ios/Podfile ]; then
+            sed -i '' 's/# platform :ios/platform :ios/' ios/Podfile
+            sed -i '' "s/platform :ios, '.*'/platform :ios, '13.0'/" ios/Podfile
+            sed -i '' 's/platform :ios, ".*"/platform :ios, "13.0"/' ios/Podfile
+          fi
+
       - name: Get Dependencies
         run: flutter pub get
 
